@@ -15,7 +15,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        oses:
+        stuff:
           - zandebianfix
     steps:
       - uses: actions/checkout@v4
