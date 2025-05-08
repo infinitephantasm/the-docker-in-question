@@ -2,7 +2,7 @@ FROM         --platform=$TARGETOS/$TARGETARCH debian:bookworm-slim
 
 LABEL        author="infinitephantasm" maintainer="infinitephantasm666@gmail.com"
 
-LABEL        org.opencontainers.image.source="https://github.com/pterodactyl/yolks"
+LABEL        org.opencontainers.image.source="https://github.com/infinitephantasm/the-docker-in-question"
 LABEL        org.opencontainers.image.licenses=MIT
 
 ENV          DEBIAN_FRONTEND=noninteractive
