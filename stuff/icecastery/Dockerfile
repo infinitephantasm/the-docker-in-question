@@ -33,7 +33,7 @@ RUN         if [ "$(uname -m)" = "x86_64" ]; then \
             fi
 
 # ARM64 libssl1.1
-RUN         if [ ! "$(uname -m)" = "aarch64" ]; then \
+RUN         if [ ! "$(uname -m)" = "x86_64" ]; then \
                 wget http://ports.ubuntu.com/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_arm64.deb && \
                 dpkg -i libssl1.1_1.1.1f-1ubuntu2_arm64.deb && \
                 rm libssl1.1_1.1.1f-1ubuntu2_arm64.deb; \
