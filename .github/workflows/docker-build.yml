@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - master
-    paths:
-      - stuff/**
 jobs:
   push:
     name: "the-docker-in-question:${{ matrix.stuff }}"
