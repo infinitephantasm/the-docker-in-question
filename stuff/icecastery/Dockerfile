@@ -23,7 +23,21 @@ RUN          apt install -y gcc g++ libgcc1 libc++-dev gdb libc6 git wget curl t
              liblua5.3-0 libz-dev rapidjson-dev tzdata libevent-dev libzip4 libssl-dev openssl musl-dev tini
 			 
 ## Extra IceCast dependencies/libraries
-RUN          apt install -y libogg0 libspeex1 libssl1.1 libtheora0 libvorbis0a libxml2 libxslt1.1 lsb-base
+RUN          apt install -y libogg0 libspeex1 libtheora0 libvorbis0a libxml2 libxslt1.1 lsb-base
+
+# x86_64 libssl1.1
+RUN         if [ "$(uname -m)" = "x86_64" ]; then \
+                wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.0g-2ubuntu4_amd64.deb && \
+                dpkg -i libssl1.1_1.1.0g-2ubuntu4_amd64.deb && \
+                rm libssl1.1_1.1.0g-2ubuntu4_amd64.deb; \
+            fi
+
+# ARM64 libssl1.1
+RUN         if [ ! "$(uname -m)" = "aarch64" ]; then \
+                wget http://ports.ubuntu.com/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_arm64.deb && \
+                dpkg -i libssl1.1_1.1.1f-1ubuntu2_arm64.deb && \
+                rm libssl1.1_1.1.1f-1ubuntu2_arm64.deb; \
+            fi
 
 ## Configure locale
 RUN          update-locale lang=en_US.UTF-8 \
