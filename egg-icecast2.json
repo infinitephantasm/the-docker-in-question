@@ -1,0 +1,112 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2026-08-02T03:35:36-05:00",
+    "name": "IceCast 2",
+    "author": "josdekurk@gmail.com",
+    "description": "Icecast is a streaming media (audio\/video) server which currently supports Ogg (Vorbis and Theora), Opus, WebM and MP3 streams.\r\nIt can be used to create an Internet radio station or a privately running jukebox and many things in between. It is very versatile in that new formats can be added relatively easily and supports open standards for communication and interaction.",
+    "features": null,
+    "docker_images": {
+        "quintenqvd\/pterodactyl_images:debian": "quintenqvd\/pterodactyl_images:debian"
+    },
+    "file_denylist": [],
+    "startup": ".\/icecast2 -c icecast.xml",
+    "config": {
+        "files": "{\r\n    \"icecast.xml\": {\r\n        \"parser\": \"xml\",\r\n        \"find\": {\r\n            \"icecast.listen-socket.port\": \"{{server.build.default.port}}\",\r\n            \"icecast.authentication.admin-user\": \"{{server.build.env.ADMIN_USERNAME}}\",\r\n            \"icecast.authentication.admin-password\": \"{{server.build.env.ADMIN_PASSWORD}}\",\r\n            \"icecast.paths.basedir\": \"\/home\/container\",\r\n            \"icecast.paths.logdir\": \"\/home\/container\/log\",\r\n            \"icecast.paths.webroot\": \"\/home\/container\/web\",\r\n            \"icecast.paths.adminroot\": \"\/home\/container\/admin\",\r\n            \"icecast.location\": \"{{server.build.env.LOCATION}}\",\r\n            \"icecast.hostname\": \"{{server.build.env.HOSTNAME}}\",\r\n            \"icecast.authentication.source-password\": \"{{server.build.env.SOURCE_PASSWORD}}\",\r\n            \"icecast.authentication.relay-password\": \"{{server.build.env.RELAY_PASSWORD}}\",\r\n            \"icecast.listen-socket.bind-address\": \"0.0.0.0\",\r\n            \"icecast.admin\": \"{{server.build.env.ADMIN_EMAIL}}\"\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": \"icecast2\"\r\n}",
+        "logs": "{}",
+        "stop": "^^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/bash\r\n\r\napt update\r\napt install -y curl binutils tar xz-utils libssl1.1 libspeex1 libtheora0 libvorbis0a libogg0 libxslt1.1 libxml2\r\n\r\nmkdir -p \/mnt\/server\/tmp\r\ncd \/mnt\/server\r\nrm icecast2\r\ncd \/mnt\/server\/tmp\r\n\r\nDOWNLOAD_URL=http:\/\/ftp.de.debian.org\/debian\/pool\/main\/i\/icecast2\/icecast2_${VERSION}_arm64.deb\r\n\r\nif [ ! -z \"${DOWNLOAD_URL}\" ]; then \r\n    if curl --output \/dev\/null --silent --head --fail ${DOWNLOAD_URL}; then\r\n        echo -e \"link is valid. setting download link to ${DOWNLOAD_URL}\"\r\n        DOWNLOAD_LINK=${DOWNLOAD_URL}\r\n    else        \r\n        echo -e \"link is invalid closing out\"\r\n        exit 2\r\n    fi\r\nfi\r\n\r\necho \"downloading the .deb\"\r\ncurl -sSL -o icecast2.deb ${DOWNLOAD_URL}\r\nar xv icecast2.deb\r\nrm -rf icecast2.deb control.tar.xz debian-binary\r\ntar xvf data.tar.xz\r\nrm -rf data.tar.xz\r\nmv usr\/bin\/icecast2 \/mnt\/server\r\nmv etc\/icecast2\/* \/mnt\/server\r\ncd \/mnt\/server\r\nmkdir log\/\r\nrm -rf tmp\/ icecast.xml\r\ncurl -sSL -o icecast.xml https:\/\/gist.github.com\/infinitephantasm\/ceb30ab9c776e8aab9f7f068a2316c70\/raw\/fcd56dacf5e4c995d8190f468acffe157d131453\/icecast.xml\r\n\r\necho \"install done\"",
+            "container": "debian:bullseye-slim",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Version",
+            "description": "example: 2.4.4-4",
+            "env_variable": "VERSION",
+            "default_value": "2.4.4-4",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:20",
+            "field_type": "text"
+        },
+        {
+            "name": "Admin user name",
+            "description": "",
+            "env_variable": "ADMIN_USERNAME",
+            "default_value": "admin",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:32",
+            "field_type": "text"
+        },
+        {
+            "name": "Admin user password",
+            "description": "",
+            "env_variable": "ADMIN_PASSWORD",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|min:8|max:32",
+            "field_type": "text"
+        },
+        {
+            "name": "Location",
+            "description": "",
+            "env_variable": "LOCATION",
+            "default_value": "Earth",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:16",
+            "field_type": "text"
+        },
+        {
+            "name": "Hostname",
+            "description": "",
+            "env_variable": "HOSTNAME",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:32",
+            "field_type": "text"
+        },
+        {
+            "name": "Source Password",
+            "description": "",
+            "env_variable": "SOURCE_PASSWORD",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|min:10|max:32",
+            "field_type": "text"
+        },
+        {
+            "name": "Relay password",
+            "description": "",
+            "env_variable": "RELAY_PASSWORD",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|min:10|max:32",
+            "field_type": "text"
+        },
+        {
+            "name": "Admin E-mail",
+            "description": "",
+            "env_variable": "ADMIN_EMAIL",
+            "default_value": "icemaster@localhost",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|max:64",
+            "field_type": "text"
+        }
+    ]
+}
